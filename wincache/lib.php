@@ -23,7 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class cachestore_wincache extends cache_store implements cache_is_key_aware {
+// 2.4.3+ (Build: 20130418) and below compatibility
+if (!interface_exists('cache_is_searchable')) {
+    // Available from 2.4.4, including '2.4.3+ (Build: 20130425)' and above
+    interface cache_is_searchable {
+        public function find_all();
+        public function find_by_prefix($prefix);
+    }
+}
+
+class cachestore_wincache extends cache_store implements cache_is_key_aware, cache_is_searchable {
 
     /**
      * The name of this store instance.
@@ -65,7 +74,7 @@ class cachestore_wincache extends cache_store implements cache_is_key_aware {
      * @return int The supported features.
      */
     public static function get_supported_features(array $configuration = array()) {
-        return self::SUPPORTS_DATA_GUARANTEE + self::SUPPORTS_NATIVE_TTL;
+        return self::SUPPORTS_DATA_GUARANTEE + self::SUPPORTS_NATIVE_TTL + self::IS_SEARCHABLE;
     }
 
     /**
@@ -173,6 +182,37 @@ class cachestore_wincache extends cache_store implements cache_is_key_aware {
             }
         }
         return false; // If we get here then no keys were found.
+    }
+
+    /**
+     * Finds all of the keys being used by the cache store.
+     *
+     * @return array
+     */
+    public function find_all() {
+        $info = wincache_ucache_info();
+        $entries = $info['ucache_entries'];
+        $keys = array();
+        foreach ($entries as $entry) {
+            $keys[] = $entry['key_name'];
+        }
+        return $keys;
+    }
+
+    /**
+     * Finds all of the keys whose keys start with the given prefix.
+     *
+     * @param string $prefix
+     * @return array
+     */
+    public function find_by_prefix($prefix) {
+        $keys = array();
+        foreach ($this->find_all() as $key) {
+            if (strpos($key, $prefix) === 0) {
+                $keys[] = $key;
+            }
+        }
+        return $keys;
     }
 
     /**

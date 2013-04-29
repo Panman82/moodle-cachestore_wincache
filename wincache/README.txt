@@ -72,7 +72,7 @@ for Moodle, it might be a good idea to enable WinCache session handler there as 
 
 1. Edit your php.ini file
 2. Change the "session.save_handler" to "wincache" (no quotes)
-3. Ensure the "session.save_path" is set to the sessions folder within your moodle data folder.
+3. Ensure the "session.save_path" is set to the sessions folder within your moodle data folder
    Ex: C:/inetpub/moodledata/sessions
 4. Save the php.ini file changes
 5. Restart the App Pool which PHP is running under. If you don't know, just restart IIS

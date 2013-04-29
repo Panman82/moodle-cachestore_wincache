@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2013041800;
+$plugin->version   = 2013042900;
 $plugin->requires  = 2012120300; // Moodle 2.4.0+
 $plugin->cron      = 0; // No cron jobs to run here
 $plugin->component = 'cachestore_wincache';
