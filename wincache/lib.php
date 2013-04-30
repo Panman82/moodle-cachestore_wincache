@@ -35,6 +35,12 @@ if (!interface_exists('cache_is_searchable')) {
 class cachestore_wincache extends cache_store implements cache_is_key_aware, cache_is_searchable {
 
     /**
+     * The cache is searchable by key.
+     * Re-declaring it here to ensure 2.4.0-2.4.3 compatibility
+     */
+    const IS_SEARCHABLE = 8;
+
+    /**
      * The name of this store instance.
      * @var string
      */
